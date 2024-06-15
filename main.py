@@ -53,55 +53,67 @@ class Enemy(pygame.sprite.Sprite):
     if self.rect.bottom > WINDOW_HEIGHT:
       self.kill()
 
-player = Player()
-
-running = True
-
-player = Player()
+# sprite groups
 player_group = pygame.sprite.Group()
-player_group.add(player)
 bullet_group = pygame.sprite.Group()
+enemy_group = pygame.sprite.Group()
+
+# make sprites
+player = Player()
+player_group.add(player)
 
 ADDENEMY = pygame.USEREVENT + 1
 pygame.time.set_timer(ADDENEMY,250)
 
-enemies = pygame.sprite.Group()
-all_sprites = pygame.sprite.Group()
-all_sprites.add(player)
+game_menu = ['1 - Start Game', '2 - Exit Game']
 
 running = True
+game_running = False
 
 while running:
+
+    keyPressed = pygame.key.get_pressed()
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_1:
+                game_running = True
+            if event.key == pygame.K_2:
+                pygame.quit()
+                sys.exit()
+            if event.key == pygame.K_ESCAPE:
+                game_running = not game_running
+        
+        if game_running:
+            # if event.type == pygame.MOUSEBUTTONDOWN:
+            #     bullet_group.add(player.create_bullet())
+            if event.type == ADDENEMY:
+                new_enemy = Enemy()
+                enemy_group.add(new_enemy)
+    
+    # show a game menu if game hasn't started
+    if not game_running:
+        for i in range(len(game_menu)):
+            font = pygame.font.Font(None, 36)
+            text = font.render(game_menu[i], True, (255, 255, 255))
+            text_rect = text.get_rect(center=(WINDOW_WIDTH/2, WINDOW_HEIGHT/2 + i*30))
+            window.blit(text, text_rect)
+        pygame.display.flip()
+        continue
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            bullet_group.add(player.create_bullet())
-
-        if event.type == ADDENEMY:
-            new_enemy = Enemy()
-            enemies.add(new_enemy)
-            all_sprites.add(new_enemy)
-
-    player.update()
-    enemies.update()
+    # update sprites if game is running
+    if game_running:
+        player_group.update()
+        bullet_group.update()
+        enemy_group.update()
 
     window.fill((BLACK))
     window.blit(player.surf, player.rect)
     for entity in bullet_group:
         window.blit(entity.surf, entity.rect)
-    for entity in all_sprites:
-        window.blit(entity.surf,entity.rect)
-    player_group.update()
-    bullet_group.update()
-
-    if pygame.sprite.spritecollideany(player,enemies):
-        player.kill()
-        pygame.time.delay(500)
-        running = False
-    pygame.display.flip()
 
     clock.tick(FPS)
 
