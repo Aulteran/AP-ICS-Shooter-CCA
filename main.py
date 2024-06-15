@@ -32,10 +32,7 @@ class Player (pygame.sprite.Sprite):
             self.rect.move_ip(0, -1)
         if pressed_keys[K_DOWN]:
             self.rect.move_ip(0, 1)
-        if pressed_keys[K_SPACE]:
-            pass
-            # bullet = Bullet(self.rect.centerx, self.rect.centery)
-            # bullet_group.add(bullet)
+
       # add boundary checking to make sure player doesn't go off screen
       if self.rect.left < 0:
           self.rect.left = 0
