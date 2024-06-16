@@ -53,16 +53,11 @@ class Player (pygame.sprite.Sprite):
               pygame.quit()
               sys.exit()
 
-  # def update (self):
-  #     self.rect.center = pygame.mouse.get_pos()
-
-  # def create_bullet (self):
-  #     return Bullet(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
-
 class Bullet (pygame.sprite.Sprite):
   def __init__(self, pos_x, pos_y):
       super(Bullet, self).__init__()
       self.image = pygame.image.load('bullet.png').convert()
+      self.image = pygame.transform.scale(self.image, (10,10))
       self.image.set_colorkey((WHITE), RLEACCEL)
       self.rect = self.image.get_rect(center = (pos_x, pos_y))
 
@@ -74,7 +69,9 @@ class Bullet (pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
   def __init__(self):
     super(Enemy,self).__init__()
-    self.image = pygame.image.load('enemy_bullet.png').convert()
+    self.image_variants = ['ship_boomerang_icon.png', 'ship_boomerang_pirate.png', 'ship_boomerang_shield.png', 'ship_boomerang_zom.png', 'ship_boomerang.png']
+    self.image = pygame.image.load(self.image_variants[random.randint(0,4)]).convert()
+    self.image = pygame.transform.scale(self.image, (50,50))
     self.image.set_colorkey(WHITE, RLEACCEL)
     self.rect = self.image.get_rect(center = (random.randint(0,WINDOW_WIDTH), random.randint(-100,0)))
     self.speed = random.randint(5,20)
@@ -83,6 +80,10 @@ class Enemy(pygame.sprite.Sprite):
     self.rect.move_ip(0,self.speed)
     if self.rect.bottom > WINDOW_HEIGHT:
       self.kill()
+    
+    # add collision detection to break enemy bullets when hit by self bullet
+    if pygame.sprite.spritecollide(self, bullet_group, True):
+        self.kill()
 
 # sprite groups
 player_group = pygame.sprite.Group()
