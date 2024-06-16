@@ -22,7 +22,7 @@ class Player (pygame.sprite.Sprite):
       self.image.set_colorkey((WHITE), RLEACCEL)
       self.image = pygame.transform.scale(self.image, (60,60))
       self.rect = self.image.get_rect()
-      self.rect.center = (WINDOW_WIDTH / 3, WINDOW_HEIGHT-100)
+      self.rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT-100)
       self.hp = 100
       self.num_bullets = 30
       self.bullets_used = 0
@@ -70,7 +70,8 @@ class Player (pygame.sprite.Sprite):
               enemy_group.empty()
               bullet_group.empty()
               # save playerdata to main_db
-              data_entry = [time, self.enemies_killed, self.bullets_used, attempt]
+              data_entry = [attempt, time, self.enemies_killed, self.bullets_used]
+              main_db.append(data_entry)
 
 class Bullet (pygame.sprite.Sprite):
   def __init__(self, pos_x, pos_y):
@@ -144,6 +145,7 @@ while running:
                 if first_run:
                     first_run = False
                 attempt += 1
+                time = 0
                 player_group.empty()
                 player = Player()
                 player_group.add(player)
@@ -200,7 +202,7 @@ with open('data_anal.csv', 'a') as f:
     print()
     for i in range(len(DB)):
         write = str(DB[i])
-        f.write(write + '\n') #[1:-1]
+        f.write(write[1:-1] + '\n')
     f.close()
 
 pygame.quit()
