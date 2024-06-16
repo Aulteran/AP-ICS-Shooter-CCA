@@ -9,6 +9,8 @@ WINDOW_HEIGHT = 480
 WINDOW_WIDTH = 480
 FPS = 30
 
+main_db = []
+
 pygame.init()
 window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 clock = pygame.time.Clock()
@@ -23,6 +25,8 @@ class Player (pygame.sprite.Sprite):
       self.rect.center = (WINDOW_WIDTH / 3, WINDOW_HEIGHT-100)
       self.hp = 100
       self.num_bullets = 30
+      self.bullets_used = 0
+      self.enemies_killed = 0
 
   def shoot_bullet(self):
       if self.num_bullets > 0:
@@ -30,9 +34,10 @@ class Player (pygame.sprite.Sprite):
       else: return
       bullet = Bullet(self.rect.centerx, self.rect.centery)
       bullet_group.add(bullet)
+      self.bullets_used += 1
   
   def update(self):
-      global game_running, player_group, enemy_group, bullet_group
+      global game_running, player_group, enemy_group, bullet_group, time, attempt
       if game_running:
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[K_LEFT]:
@@ -59,10 +64,13 @@ class Player (pygame.sprite.Sprite):
           self.hp -= 10
           print('Player HP:', self.hp)
           if self.hp <= 0:
+              # if player dies, stop game
               print('Game Over')
               game_running = False
               enemy_group.empty()
               bullet_group.empty()
+              # save playerdata to main_db
+              data_entry = [time, self.enemies_killed, self.bullets_used, attempt]
 
 class Bullet (pygame.sprite.Sprite):
   def __init__(self, pos_x, pos_y):
@@ -96,6 +104,7 @@ class Enemy(pygame.sprite.Sprite):
     if pygame.sprite.spritecollide(self, bullet_group, True):
         self.kill()
         player.num_bullets += 2
+        player.enemies_killed += 1
 
 # sprite groups
 player_group = pygame.sprite.Group()
@@ -115,8 +124,11 @@ font = pygame.font.Font(None, 36)
 running = True
 game_running = False
 first_run = True
+time = 0
+attempt = 0
 
 while running:
+    time += 1
     window.fill(BLACK)
 
     if first_run:
@@ -131,13 +143,14 @@ while running:
             if event.key == pygame.K_1:
                 if first_run:
                     first_run = False
+                attempt += 1
                 player_group.empty()
                 player = Player()
                 player_group.add(player)
                 game_running = True
             if event.key == pygame.K_2:
-                pygame.quit()
-                sys.exit()
+                running = False
+                break
             if event.key == pygame.K_ESCAPE and not first_run:
                 game_running = not game_running
             if event.key == pygame.K_SPACE:
@@ -147,6 +160,9 @@ while running:
             if event.type == ADDENEMY:
                 new_enemy = Enemy()
                 enemy_group.add(new_enemy)
+    
+    if not running:
+        break
     
     # show a game menu if game hasn't started
     if not game_running:
@@ -175,4 +191,17 @@ while running:
     pygame.display.flip()
     clock.tick(FPS)
 
+DB = []
+for i in range(len(main_db)):
+    if main_db[i] not in DB:
+        DB.append(main_db[i])
+# save main_db to a CSV file
+with open('data_anal.csv', 'a') as f:
+    print()
+    for i in range(len(DB)):
+        write = str(DB[i])
+        f.write(write + '\n') #[1:-1]
+    f.close()
+
 pygame.quit()
+sys.exit()
