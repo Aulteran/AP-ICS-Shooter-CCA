@@ -109,7 +109,7 @@ player_group.add(player)
 ADDENEMY = pygame.USEREVENT + 1
 pygame.time.set_timer(ADDENEMY,350)
 
-game_menu = ['1 - Start Game', '3 - Exit Game', 'Press ESC to pause game']
+game_menu = ['1 - Start Game', '2 - Exit Game', 'Press ESC to pause game']
 font = pygame.font.Font(None, 36)
 
 running = True
@@ -135,7 +135,7 @@ while running:
                 player = Player()
                 player_group.add(player)
                 game_running = True
-            if event.key == pygame.K_3:
+            if event.key == pygame.K_2:
                 pygame.quit()
                 sys.exit()
             if event.key == pygame.K_ESCAPE and not first_run:
