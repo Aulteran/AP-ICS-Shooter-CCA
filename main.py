@@ -16,13 +16,13 @@ window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 clock = pygame.time.Clock()
 
 pygame.mixer.init()
-pygame.mixer.music.load("bg-music.mp3")
+pygame.mixer.music.load("assets/bg-music.mp3")
 pygame.mixer.music.play(-1)
 
 class Player (pygame.sprite.Sprite):
   def __init__(self):
       super(Player, self).__init__()
-      self.image = pygame.image.load('soldier.png').convert()
+      self.image = pygame.image.load('assets/soldier.png').convert()
       self.image.set_colorkey((WHITE), RLEACCEL)
       self.image = pygame.transform.scale(self.image, (60,60))
       self.rect = self.image.get_rect()
@@ -74,7 +74,7 @@ class Player (pygame.sprite.Sprite):
               enemy_group.empty()
               bullet_group.empty()
               pygame.mixer.init()
-              pygame.mixer.music.load("wompwomp.mp3")
+              pygame.mixer.music.load("assets/wompwomp.mp3")
               pygame.mixer.music.play(1)
               # save playerdata to main_db
               data_entry = [attempt, time, self.enemies_killed, self.bullets_used]
@@ -83,7 +83,7 @@ class Player (pygame.sprite.Sprite):
 class Bullet (pygame.sprite.Sprite):
   def __init__(self, pos_x, pos_y):
       super(Bullet, self).__init__()
-      self.image = pygame.image.load('bullet.png').convert()
+      self.image = pygame.image.load('assets/bullet.png').convert()
       self.image = pygame.transform.scale(self.image, (10,10))
       self.image.set_colorkey((WHITE), RLEACCEL)
       self.rect = self.image.get_rect(center = (pos_x, pos_y))
@@ -97,7 +97,7 @@ class Enemy(pygame.sprite.Sprite):
   def __init__(self):
     super(Enemy,self).__init__()
     self.image_variants = ['ship_boomerang_icon.png', 'ship_boomerang_pirate.png', 'ship_boomerang_shield.png', 'ship_boomerang_zom.png', 'ship_boomerang.png']
-    self.image = pygame.image.load(self.image_variants[random.randint(0,4)]).convert()
+    self.image = pygame.image.load(f'assets/{self.image_variants[random.randint(0,4)]}').convert()
     self.image = pygame.transform.scale(self.image, (50,50))
     self.image.set_colorkey(WHITE, RLEACCEL)
     self.rect = self.image.get_rect(center = (random.randint(0,WINDOW_WIDTH), random.randint(-100,0)))
@@ -151,7 +151,7 @@ while running:
             if event.key == pygame.K_1:
                 if not first_run:
                     pygame.mixer.init()
-                    pygame.mixer.music.load("bg-music.mp3")
+                    pygame.mixer.music.load("assets/bg-music.mp3")
                     pygame.mixer.music.play(-1)
                 if first_run:
                     first_run = False
@@ -209,7 +209,7 @@ for i in range(len(main_db)):
     if main_db[i] not in DB:
         DB.append(main_db[i])
 # save main_db to a CSV file
-with open('data_anal.csv', 'a') as f:
+with open('all_data.csv', 'a') as f:
     print()
     for i in range(len(DB)):
         write = str(DB[i])
