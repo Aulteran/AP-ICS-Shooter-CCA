@@ -1,4 +1,4 @@
-attempt,timeOfGame,enemiesKilled,bulletsUsed
+attempt,timeTaken,enemiesKilled,bulletsUsed
 1, 2359, 6, 8
 2, 954, 18, 25
 1, 444, 5, 7
