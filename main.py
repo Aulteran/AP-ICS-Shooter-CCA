@@ -149,6 +149,10 @@ while running:
             sys.exit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_1:
+                if not first_run:
+                    pygame.mixer.init()
+                    pygame.mixer.music.load("bg-music.mp3")
+                    pygame.mixer.music.play(-1)
                 if first_run:
                     first_run = False
                 attempt += 1
@@ -157,9 +161,6 @@ while running:
                 player = Player()
                 player_group.add(player)
                 game_running = True
-                pygame.mixer.init()
-                pygame.mixer.music.load("bg-music.mp3")
-                pygame.mixer.music.play(-1)
             if event.key == pygame.K_2:
                 running = False
                 break
