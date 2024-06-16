@@ -21,17 +21,18 @@ class Player (pygame.sprite.Sprite):
       self.image = pygame.transform.scale(self.image, (60,60))
       self.rect = self.image.get_rect()
       self.rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT-100)
+      self.hp = 100
   def update(self, game_running):
       if game_running:
         pressed_keys = pygame.key.get_pressed()
         if pressed_keys[K_LEFT]:
-            self.rect.move_ip(-1, 0)
+            self.rect.move_ip(-2, 0)
         if pressed_keys[K_RIGHT]:
-            self.rect.move_ip(1, 0)
+            self.rect.move_ip(2, 0)
         if pressed_keys[K_UP]:
-            self.rect.move_ip(0, -1)
+            self.rect.move_ip(0, -2)
         if pressed_keys[K_DOWN]:
-            self.rect.move_ip(0, 1)
+            self.rect.move_ip(0, 2)
 
       # add boundary checking to make sure player doesn't go off screen
       if self.rect.left < 0:
@@ -42,6 +43,15 @@ class Player (pygame.sprite.Sprite):
           self.rect.top = 0
       if self.rect.bottom >= WINDOW_HEIGHT:
           self.rect.bottom = WINDOW_HEIGHT
+
+      # add collision detection
+      if pygame.sprite.spritecollide(self, enemy_group, True):
+          self.hp -= 10
+          print('Player HP:', self.hp)
+          if self.hp <= 0:
+              print('Game Over')
+              pygame.quit()
+              sys.exit()
 
   # def update (self):
   #     self.rect.center = pygame.mouse.get_pos()
