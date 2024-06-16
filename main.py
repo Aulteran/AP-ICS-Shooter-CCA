@@ -15,6 +15,10 @@ pygame.init()
 window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 clock = pygame.time.Clock()
 
+pygame.mixer.init()
+pygame.mixer.music.load("bg-music.mp3")
+pygame.mixer.music.play(-1)
+
 class Player (pygame.sprite.Sprite):
   def __init__(self):
       super(Player, self).__init__()
@@ -69,6 +73,9 @@ class Player (pygame.sprite.Sprite):
               game_running = False
               enemy_group.empty()
               bullet_group.empty()
+              pygame.mixer.init()
+              pygame.mixer.music.load("wompwomp.mp3")
+              pygame.mixer.music.play(1)
               # save playerdata to main_db
               data_entry = [attempt, time, self.enemies_killed, self.bullets_used]
               main_db.append(data_entry)
@@ -150,6 +157,9 @@ while running:
                 player = Player()
                 player_group.add(player)
                 game_running = True
+                pygame.mixer.init()
+                pygame.mixer.music.load("bg-music.mp3")
+                pygame.mixer.music.play(-1)
             if event.key == pygame.K_2:
                 running = False
                 break
